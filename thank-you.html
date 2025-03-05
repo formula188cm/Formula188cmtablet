@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - Formula188cm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="checkout.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="thank-you-container">
+        <div class="success-animation">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+        
+        <h1>Thank You for Your Order!</h1>
+        <p class="order-number">Order #: <span id="orderNumber">12345</span></p>
+        
+        <!-- Different messages for different payment methods -->
+        <div id="codMessage" style="display: none;">
+            <p class="confirmation-message">
+                Your order has been confirmed and will be shipped soon.
+                We'll send you an email with tracking details.
+            </p>
+        </div>
+
+        <div id="onlineMessage" style="display: none;">
+            <p class="confirmation-message">
+                Your order has been registered. Please complete the payment to confirm your order.
+            </p>
+            <button id="payNowBtn" class="continue-btn">Pay Now</button>
+        </div>
+        
+        <div class="order-details">
+            <h3>Order Details</h3>
+            <div class="detail-item">
+                <span>Product:</span>
+                <span>Formula188cm Height Growth Supplement</span>
+            </div>
+            <div class="detail-item">
+                <span>Quantity:</span>
+                <span id="orderQuantity">1</span>
+            </div>
+            <div class="detail-item">
+                <span>Total Amount:</span>
+                <span id="orderTotal">₹1,299</span>
+            </div>
+            <div class="detail-item">
+                <span>Payment Method:</span>
+                <span id="paymentMethod">Cash on Delivery</span>
+            </div>
+        </div>
+
+        <a href="index.html" class="continue-shopping">Continue Shopping</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get order and payment details from sessionStorage
+            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+            const paymentDetails = JSON.parse(sessionStorage.getItem('paymentDetails'));
+
+            // Update order details
+            document.getElementById('orderQuantity').textContent = orderDetails.quantity;
+            document.getElementById('orderTotal').textContent = orderDetails.total;
+            document.getElementById('paymentMethod').textContent = 
+                paymentDetails.method === 'cod' ? 'Cash on Delivery' : 'Online Payment';
+
+            // Show appropriate message
+            if (paymentDetails.method === 'cod') {
+                document.getElementById('codMessage').style.display = 'block';
+            } else {
+                document.getElementById('onlineMessage').style.display = 'block';
+                
+                // Handle Pay Now button
+                document.getElementById('payNowBtn').addEventListener('click', function() {
+                    window.location.href = paymentDetails.razorpayLink;
+                });
+            }
+
+            // Generate random order number
+            const orderNumber = 'ORD' + Math.floor(Math.random() * 1000000);
+            document.getElementById('orderNumber').textContent = orderNumber;
+        });
+    </script>
+</body>
+</html> 
