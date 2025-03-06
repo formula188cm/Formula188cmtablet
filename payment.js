@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Update Google Sheet with payment method
-            await fetch('https://script.google.com/macros/s/AKfycbzGSMlCLy4o5WLT5NaQ_mxNheFJcjCp8lamqNKZV4Mwv6YWA5iA-dS9O5YMDthuRhY_iA/exec', {
+            await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {

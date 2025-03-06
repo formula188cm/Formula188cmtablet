@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
             phone: document.getElementById('phone').value,
             email: document.getElementById('email').value,
             address: document.getElementById('address').value,
+            city: document.getElementById('city').value,
             state: document.getElementById('state').value,
+            pincode: document.getElementById('pincode').value,
             landmark: document.getElementById('landmark').value,
             quantity: document.getElementById('quantity').value,
             total: summaryTotal.textContent,
@@ -37,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Send data to Google Sheets
-            const response = await fetch('https://script.google.com/macros/s/AKfycbyCFdcuz5ps6oGfYnT47P0JY7ehWsqmJiTcpmZ_76lV-ErwNabd-ScjENpEEvO1LKt0Ug/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
