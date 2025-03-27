@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedPayment = document.querySelector('input[name="payment"]:checked');
         
         if (!selectedPayment) {
-            alert('Please select a payment method');
+            alert('Please select a payment method to continue');
             return;
         }
 
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
         orderDetails.paymentMethod = selectedPayment.value;
 
         try {
-            // Update Google Sheet with payment method
-            await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec', {
+            // Update Google Sheet with payment method (now going to sheet 3)
+            await fetch('https://script.google.com/macros/s/AKfycbydNwcC1wvTBX-YCBY2suTgzSQFoGRHSsnpitAOzZBsaY2PBmb4FQ-gY9XsjpTM3IeCGA/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 razorpayLink: selectedPayment.value === 'online' ? razorpayLinks[orderDetails.quantity] : null
             }));
 
-            // Always redirect to thank you page
+            // Redirect to thank you page
             window.location.href = 'thank-you.html';
 
         } catch (error) {

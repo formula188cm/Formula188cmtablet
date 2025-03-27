@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Sending data:', formData); // Debug log
 
         try {
-            // Send data to Google Sheets
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec', {
+            // Send data to Google Sheets (now going to sheet 3)
+            const response = await fetch('https://script.google.com/macros/s/AKfycbydNwcC1wvTBX-YCBY2suTgzSQFoGRHSsnpitAOzZBsaY2PBmb4FQ-gY9XsjpTM3IeCGA/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
