@@ -64,22 +64,32 @@
             const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
             const paymentDetails = JSON.parse(sessionStorage.getItem('paymentDetails'));
 
+            if (!orderDetails || !paymentDetails) {
+                // If no order or payment details found, redirect back to checkout
+                window.location.href = 'checkout.html';
+                return;
+            }
+
             // Update order details
             document.getElementById('orderQuantity').textContent = orderDetails.quantity;
             document.getElementById('orderTotal').textContent = orderDetails.total;
             document.getElementById('paymentMethod').textContent = 
                 paymentDetails.method === 'cod' ? 'Cash on Delivery' : 'Online Payment';
 
-            // Show appropriate message
-            if (paymentDetails.method === 'cod') {
-                document.getElementById('codMessage').style.display = 'block';
-            } else {
+            // Show appropriate message based on payment method
+            if (paymentDetails.method === 'online') {
                 document.getElementById('onlineMessage').style.display = 'block';
+                document.getElementById('codMessage').style.display = 'none';
                 
                 // Handle Pay Now button
                 document.getElementById('payNowBtn').addEventListener('click', function() {
+                    // Clear payment details before redirecting to payment
+                    sessionStorage.removeItem('paymentDetails');
                     window.location.href = paymentDetails.razorpayLink;
                 });
+            } else {
+                document.getElementById('codMessage').style.display = 'block';
+                document.getElementById('onlineMessage').style.display = 'none';
             }
 
             // Generate random order number

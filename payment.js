@@ -1,17 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Clear any previous payment data when starting a new payment
+    sessionStorage.removeItem('paymentDetails');
+    
     // Get order details from sessionStorage
     const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+    
+    if (!orderDetails) {
+        // If no order details found, redirect back to checkout
+        window.location.href = 'checkout.html';
+        return;
+    }
     
     // Update summary section
     document.getElementById('summaryQuantity').textContent = orderDetails.quantity;
     document.getElementById('summaryTotal').textContent = orderDetails.total;
 
-    // Razorpay payment links (replace with your actual Razorpay payment links)
-    const razorpayLinks = {
-        1: "https://rzp.io/rzp/FTsov6Dt",
-        2: "https://rzp.io/rzp/Pq140Wwf",
-        3: "https://rzp.io/rzp/7k2mDXoo",
-        4: "https://rzp.io/rzp/AwWf7Ud"
+    // Generate a unique order ID
+    const orderId = 'ORD' + Date.now() + Math.floor(Math.random() * 1000);
+
+    // Payment links for different quantities
+    const paymentLinks = {
+        1: "https://rzp.io/rzp/esyF41c", // Link for 1 quantity (₹1,299)
+        2: "https://rzp.io/rzp/rbJvCYV", // Link for 2 quantity (₹2,598)
+        3: "https://rzp.io/rzp/OPCVZfE", // Link for 3 quantity (₹3,897)
+        4: "https://rzp.io/rzp/iqpKfzG"   // Link for 4 quantity (₹5,196)
     };
 
     // Handle payment selection and order placement
@@ -23,32 +35,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Add payment method to order details
-        orderDetails.paymentMethod = selectedPayment.value;
-
-        try {
-            // Update Google Sheet with payment method (now going to sheet 3)
-            await fetch('https://script.google.com/macros/s/AKfycbydNwcC1wvTBX-YCBY2suTgzSQFoGRHSsnpitAOzZBsaY2PBmb4FQ-gY9XsjpTM3IeCGA/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderDetails)
-            });
-
-            // Store payment details for thank you page
-            sessionStorage.setItem('paymentDetails', JSON.stringify({
-                method: selectedPayment.value,
-                razorpayLink: selectedPayment.value === 'online' ? razorpayLinks[orderDetails.quantity] : null
-            }));
-
-            // Redirect to thank you page
-            window.location.href = 'thank-you.html';
-
-        } catch (error) {
-            console.error('Error:', error);
-            alert('There was an error processing your order. Please try again.');
+        if (selectedPayment.value === 'online') {
+            // Get the appropriate payment link based on quantity
+            const quantity = parseInt(orderDetails.quantity);
+            const paymentLink = paymentLinks[quantity];
+            
+            if (paymentLink) {
+                window.location.href = paymentLink;
+            } else {
+                alert('Invalid quantity selected');
+            }
+        } else {
+            // Handle COD payment
+            handlePaymentSuccess(null, orderDetails);
         }
     });
 
@@ -61,4 +60,44 @@ document.addEventListener('DOMContentLoaded', function() {
             this.querySelector('input[type="radio"]').checked = true;
         });
     });
-}); 
+});
+
+// Function to handle successful payment
+async function handlePaymentSuccess(response, orderDetails) {
+    try {
+        // Add payment details to order
+        orderDetails.paymentMethod = 'online';
+        orderDetails.orderStatus = 'pending';
+        orderDetails.orderId = orderDetails.orderId;
+        if (response) {
+            orderDetails.razorpayPaymentId = response.razorpay_payment_id;
+            orderDetails.razorpayOrderId = response.razorpay_order_id;
+            orderDetails.razorpaySignature = response.razorpay_signature;
+        }
+
+        // Update Google Sheet with payment method
+        await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec?sheet=Sheet3', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderDetails)
+        });
+
+        // Store payment details for thank you page
+        sessionStorage.setItem('paymentDetails', JSON.stringify({
+            method: 'online',
+            orderStatus: 'pending',
+            orderId: orderDetails.orderId,
+            razorpayPaymentId: response ? response.razorpay_payment_id : null
+        }));
+
+        // Redirect to thank you page
+        window.location.href = 'thank-you.html';
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('There was an error processing your order. Please try again.');
+    }
+} 

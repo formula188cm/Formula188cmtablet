@@ -1,5 +1,9 @@
 // Handle quantity changes and price updates
 document.addEventListener('DOMContentLoaded', function() {
+    // Clear any previous payment data when starting a new order
+    sessionStorage.removeItem('paymentDetails');
+    sessionStorage.removeItem('orderDetails');
+    
     const quantitySelect = document.getElementById('quantity');
     const summaryQuantity = document.getElementById('summaryQuantity');
     const summaryTotal = document.getElementById('summaryTotal');
