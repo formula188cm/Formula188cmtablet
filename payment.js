@@ -15,15 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('summaryQuantity').textContent = orderDetails.quantity;
     document.getElementById('summaryTotal').textContent = orderDetails.total;
 
-    // Generate a unique order ID
-    const orderId = 'ORD' + Date.now() + Math.floor(Math.random() * 1000);
-
     // Payment links for different quantities
     const paymentLinks = {
-        1: "https://rzp.io/rzp/esyF41c", // Link for 1 quantity (₹1,299)
-        2: "https://rzp.io/rzp/rbJvCYV", // Link for 2 quantity (₹2,598)
-        3: "https://rzp.io/rzp/OPCVZfE", // Link for 3 quantity (₹3,897)
-        4: "https://rzp.io/rzp/iqpKfzG"   // Link for 4 quantity (₹5,196)
+        1: "https://rzp.io/rzp/TWF5xmG1",  // Link for ₹1,299
+        2: "https://rzp.io/rzp/fDZQCst",  // Link for ₹2,598
+        3: "https://rzp.io/rzp/XfMvJv2",  // Link for ₹3,897
+        4: "https://rzp.io/rzp/OHLRJvIc"   // Link for ₹5,196
     };
 
     // Handle payment selection and order placement
