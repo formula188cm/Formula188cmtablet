@@ -24,26 +24,66 @@ document.addEventListener('DOMContentLoaded', function() {
     addressForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        // Validate form data
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const state = document.getElementById('state').value.trim();
+        const pincode = document.getElementById('pincode').value.trim();
+        const quantity = document.getElementById('quantity').value;
+
+        // Basic validation
+        if (!name || !phone || !email || !address || !city || !state || !pincode) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Phone number validation
+        if (!/^\d{10}$/.test(phone)) {
+            alert('Please enter a valid 10-digit phone number');
+            return;
+        }
+
+        // Email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+
+        // Pincode validation
+        if (!/^\d{6}$/.test(pincode)) {
+            alert('Please enter a valid 6-digit pincode');
+            return;
+        }
+
         // Get form data
         const formData = {
-            name: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            address: document.getElementById('address').value,
-            city: document.getElementById('city').value,
-            state: document.getElementById('state').value,
-            pincode: document.getElementById('pincode').value,
-            landmark: document.getElementById('landmark').value,
-            quantity: document.getElementById('quantity').value,
+            name: name,
+            phone: phone,
+            email: email,
+            address: address,
+            city: city,
+            state: state,
+            pincode: pincode,
+            landmark: document.getElementById('landmark').value.trim(),
+            quantity: quantity,
             total: summaryTotal.textContent,
-            timestamp: new Date().toLocaleString()
+            timestamp: new Date().toLocaleString(),
+            orderStatus: 'pending',
+            paymentMethod: 'pending'
         };
 
-        console.log('Sending data:', formData); // Debug log
-
         try {
-            // Send data to Google Sheets (now going to sheet 3)
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec?sheet=Sheet3', {
+            // Show loading state
+            const submitButton = document.querySelector('.continue-btn');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = 'Processing...';
+            submitButton.disabled = true;
+
+            // Send data to Google Sheets
+            const response = await fetch('https://script.google.com/macros/s/AKfycbzBWLiNnFQQsaD8fWlquq3L3dbGklquj12ub0c79kcLWUZYuMmx1fEmdleB9odDUawJ/exec?sheet=Sheet4', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -52,8 +92,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(formData)
             });
 
-            console.log('Response received'); // Debug log
-            
             // Store data in sessionStorage for payment page
             sessionStorage.setItem('orderDetails', JSON.stringify(formData));
             
@@ -62,6 +100,10 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error:', error);
             alert('There was an error processing your order. Please try again.');
+        } finally {
+            // Reset button state
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
         }
     });
 }); 

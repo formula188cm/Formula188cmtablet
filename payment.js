@@ -32,19 +32,51 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        if (selectedPayment.value === 'online') {
-            // Get the appropriate payment link based on quantity
-            const quantity = parseInt(orderDetails.quantity);
-            const paymentLink = paymentLinks[quantity];
-            
-            if (paymentLink) {
-                window.location.href = paymentLink;
+        try {
+            // Show loading state
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            const originalText = placeOrderBtn.textContent;
+            placeOrderBtn.textContent = 'Processing...';
+            placeOrderBtn.disabled = true;
+
+            if (selectedPayment.value === 'online') {
+                // Get the appropriate payment link based on quantity
+                const quantity = parseInt(orderDetails.quantity);
+                const paymentLink = paymentLinks[quantity];
+                
+                if (paymentLink) {
+                    // Update order status before redirecting
+                    orderDetails.paymentMethod = 'online';
+                    orderDetails.orderStatus = 'payment_pending';
+                    orderDetails.paymentTimestamp = new Date().toLocaleString();
+                    
+                    // Update Google Sheet with payment attempt
+                    await updateOrderStatus(orderDetails);
+                    
+                    // Redirect to payment page
+                    window.location.href = paymentLink;
+                } else {
+                    throw new Error('Invalid quantity selected');
+                }
             } else {
-                alert('Invalid quantity selected');
+                // Handle COD payment
+                orderDetails.paymentMethod = 'cod';
+                orderDetails.orderStatus = 'pending';
+                orderDetails.paymentTimestamp = new Date().toLocaleString();
+                
+                // Update Google Sheet with COD order
+                await updateOrderStatus(orderDetails);
+                
+                // Redirect to thank you page
+                window.location.href = 'thank-you.html';
             }
-        } else {
-            // Handle COD payment
-            handlePaymentSuccess(null, orderDetails);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('There was an error processing your payment. Please try again.');
+        } finally {
+            // Reset button state
+            placeOrderBtn.textContent = originalText;
+            placeOrderBtn.disabled = false;
         }
     });
 
@@ -59,21 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Function to handle successful payment
-async function handlePaymentSuccess(response, orderDetails) {
+// Function to update order status in Google Sheets
+async function updateOrderStatus(orderDetails) {
     try {
-        // Add payment details to order
-        orderDetails.paymentMethod = 'online';
-        orderDetails.orderStatus = 'pending';
-        orderDetails.orderId = orderDetails.orderId;
-        if (response) {
-            orderDetails.razorpayPaymentId = response.razorpay_payment_id;
-            orderDetails.razorpayOrderId = response.razorpay_order_id;
-            orderDetails.razorpaySignature = response.razorpay_signature;
-        }
-
-        // Update Google Sheet with payment method
-        await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec?sheet=Sheet3', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzBWLiNnFQQsaD8fWlquq3L3dbGklquj12ub0c79kcLWUZYuMmx1fEmdleB9odDUawJ/exec?sheet=Sheet4', {
             method: 'POST',
             mode: 'no-cors',
             headers: {
@@ -84,9 +105,38 @@ async function handlePaymentSuccess(response, orderDetails) {
 
         // Store payment details for thank you page
         sessionStorage.setItem('paymentDetails', JSON.stringify({
+            method: orderDetails.paymentMethod,
+            orderStatus: orderDetails.orderStatus,
+            timestamp: orderDetails.paymentTimestamp
+        }));
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        throw error;
+    }
+}
+
+// Function to handle successful payment
+async function handlePaymentSuccess(response, orderDetails) {
+    try {
+        // Add payment details to order
+        orderDetails.paymentMethod = 'online';
+        orderDetails.orderStatus = 'completed';
+        orderDetails.paymentTimestamp = new Date().toLocaleString();
+        
+        if (response) {
+            orderDetails.razorpayPaymentId = response.razorpay_payment_id;
+            orderDetails.razorpayOrderId = response.razorpay_order_id;
+            orderDetails.razorpaySignature = response.razorpay_signature;
+        }
+
+        // Update Google Sheet with payment completion
+        await updateOrderStatus(orderDetails);
+
+        // Store payment details for thank you page
+        sessionStorage.setItem('paymentDetails', JSON.stringify({
             method: 'online',
-            orderStatus: 'pending',
-            orderId: orderDetails.orderId,
+            orderStatus: 'completed',
+            timestamp: orderDetails.paymentTimestamp,
             razorpayPaymentId: response ? response.razorpay_payment_id : null
         }));
 
