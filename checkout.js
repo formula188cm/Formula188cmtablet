@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const quantitySelect = document.getElementById('quantity');
     const summaryQuantity = document.getElementById('summaryQuantity');
     const summaryTotal = document.getElementById('summaryTotal');
-    const basePrice = 1299; // Base price of the product
+    const basePrice = 999; // Base price of the product
 
     quantitySelect.addEventListener('change', function() {
         const quantity = parseInt(this.value);
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Send data to Google Sheets (now going to sheet 3)
-            const response = await fetch('https://script.google.com/macros/s/AKfycbydNwcC1wvTBX-YCBY2suTgzSQFoGRHSsnpitAOzZBsaY2PBmb4FQ-gY9XsjpTM3IeCGA/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbwToNP9m2y-bfoXCZ4e6OJ8ZiFTzx5EVwwIdHr7CBV5TfBIa7NT8-A3oHpJxlM9hnKQPw/exec?sheet=Sheet3', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {

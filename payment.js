@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Payment links for different quantities
     const paymentLinks = {
-        1: "https://rzp.io/rzp/TWF5xmG1",  // Link for ₹1,299
-        2: "https://rzp.io/rzp/fDZQCst",  // Link for ₹2,598
-        3: "https://rzp.io/rzp/XfMvJv2",  // Link for ₹3,897
-        4: "https://rzp.io/rzp/OHLRJvIc"   // Link for ₹5,196
+        1: "https://rzp.io/rzp/TWF5xmG1",  // Link for ₹999
+        2: "https://rzp.io/rzp/fDZQCst",  // Link for ₹1,998
+        3: "https://rzp.io/rzp/XfMvJv2",  // Link for ₹2,997
+        4: "https://rzp.io/rzp/OHLRJvIc"   // Link for ₹3,996
     };
 
     // Handle payment selection and order placement
