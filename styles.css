@@ -627,4 +627,67 @@ img {
         margin: 0 0.5rem;
         padding: 0.8rem;
     }
+}
+
+/* Reviews Section */
+.reviews {
+    padding: 4rem 2rem;
+    background-color: #f8f8f8;
+}
+
+.reviews h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.reviews-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.review-image {
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.review-screenshot {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.review-cta {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.review-highlight {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+/* Responsive Design for Reviews */
+@media (max-width: 768px) {
+    .reviews {
+        padding: 3rem 1rem;
+    }
+
+    .review-image {
+        max-width: 100%;
+    }
+
+    .review-highlight {
+        font-size: 1.1rem;
+    }
 } 
