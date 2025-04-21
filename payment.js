@@ -11,83 +11,113 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // Update summary section
-    document.getElementById('summaryQuantity').textContent = orderDetails.quantity;
-    document.getElementById('summaryTotal').textContent = orderDetails.total;
+    // Update summary amounts
+    const subtotalElement = document.getElementById('subtotal');
+    const totalElement = document.getElementById('total');
+    subtotalElement.textContent = orderDetails.total;
+    totalElement.textContent = orderDetails.total;
 
-    // Payment links for different quantities
+    // Define Razorpay payment links for different quantities
     const paymentLinks = {
-        1: "https://rzp.io/rzp/TWF5xmG1",  // Link for ₹999
-        2: "https://rzp.io/rzp/fDZQCst",  // Link for ₹1,998
-        3: "https://rzp.io/rzp/XfMvJv2",  // Link for ₹2,997
-        4: "https://rzp.io/rzp/OHLRJvIc"   // Link for ₹3,996
+        1: "https://rzp.io/rzp/TWF5xmG1",  // Link for quantity 1 (₹1,299)
+        2: "https://rzp.io/rzp/fDZQCst",   // Link for quantity 2 (₹2,598)
+        3: "https://rzp.io/rzp/XfMvJv2",   // Link for quantity 3 (₹3,897)
+        4: "https://rzp.io/rzp/OHLRJvIc"   // Link for quantity 4 (₹5,196)
     };
 
-    // Handle payment selection and order placement
-    document.getElementById('placeOrderBtn').addEventListener('click', async function() {
-        const selectedPayment = document.querySelector('input[name="payment"]:checked');
-        
-        if (!selectedPayment) {
-            alert('Please select a payment method to continue');
-            return;
-        }
-
-        try {
-            // Show loading state
-            const placeOrderBtn = document.getElementById('placeOrderBtn');
-            const originalText = placeOrderBtn.textContent;
-            placeOrderBtn.textContent = 'Processing...';
-            placeOrderBtn.disabled = true;
-
-            if (selectedPayment.value === 'online') {
-                // Get the appropriate payment link based on quantity
-                const quantity = parseInt(orderDetails.quantity);
-                const paymentLink = paymentLinks[quantity];
-                
-                if (paymentLink) {
-                    // Update order status before redirecting
-                    orderDetails.paymentMethod = 'online';
-                    orderDetails.orderStatus = 'payment_pending';
-                    orderDetails.paymentTimestamp = new Date().toLocaleString();
-                    
-                    // Update Google Sheet with payment attempt
-                    await updateOrderStatus(orderDetails);
-                    
-                    // Redirect to payment page
-                    window.location.href = paymentLink;
-                } else {
-                    throw new Error('Invalid quantity selected');
-                }
-            } else {
-                // Handle COD payment
-                orderDetails.paymentMethod = 'cod';
-                orderDetails.orderStatus = 'pending';
-                orderDetails.paymentTimestamp = new Date().toLocaleString();
-                
-                // Update Google Sheet with COD order
-                await updateOrderStatus(orderDetails);
-                
-                // Redirect to thank you page
-                window.location.href = 'thank-you.html';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('There was an error processing your payment. Please try again.');
-        } finally {
-            // Reset button state
-            placeOrderBtn.textContent = originalText;
-            placeOrderBtn.disabled = false;
-        }
-    });
-
-    // Add visual feedback for payment method selection
+    // Payment method selection
     const paymentMethods = document.querySelectorAll('.payment-method');
+    const proceedButton = document.getElementById('proceed-payment');
+
     paymentMethods.forEach(method => {
         method.addEventListener('click', function() {
+            // Remove active class from all methods
             paymentMethods.forEach(m => m.classList.remove('active'));
+            // Add active class to selected method
             this.classList.add('active');
-            this.querySelector('input[type="radio"]').checked = true;
+            // Enable proceed button
+            proceedButton.disabled = false;
+            // Select the radio input
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
         });
+    });
+
+    // Function to send order data to appropriate sheet
+    async function sendToSheet(data, sheetName) {
+        try {
+            await fetch('https://script.google.com/macros/s/AKfycbzgsqR8bxhrjapBRhPCFT1hT3Dk7xCrAQYOD5XPneTibbhxqz8EfvEawU1a7v6xng8ccQ/exec?sheet=' + sheetName, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+        } catch (error) {
+            console.error('Error sending data to sheet:', error);
+        }
+    }
+
+    // Handle payment proceed button
+    proceedButton.addEventListener('click', async function() {
+        const selectedMethod = document.querySelector('input[name="payment"]:checked').value;
+
+        if (selectedMethod === 'cod') {
+            // For COD orders
+            const paymentDetails = {
+                method: 'cod',
+                orderStatus: 'confirmed',
+                timestamp: new Date().toLocaleString()
+            };
+            
+            // Update order details with payment info
+            const codOrderData = {
+                ...orderDetails,
+                paymentMethod: 'cod',
+                orderStatus: 'confirmed',
+                paymentTimestamp: new Date().toLocaleString()
+            };
+
+            // Send to Sheet5 for COD orders
+            await sendToSheet(codOrderData, 'Sheet5');
+            
+            // Store payment details and redirect
+            sessionStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+            window.location.href = 'thank-you.html';
+        } else {
+            // For online payment
+            const quantity = parseInt(orderDetails.quantity);
+            const paymentLink = paymentLinks[quantity];
+            
+            if (paymentLink) {
+                // Update order details with payment info
+                const onlineOrderData = {
+                    ...orderDetails,
+                    paymentMethod: 'online',
+                    orderStatus: 'payment_pending',
+                    paymentTimestamp: new Date().toLocaleString(),
+                    razorpayLink: paymentLink
+                };
+
+                // Send to Sheet6 for online orders
+                await sendToSheet(onlineOrderData, 'Sheet6');
+                
+                // Store payment details
+                const paymentDetails = {
+                    method: 'online',
+                    orderStatus: 'payment_pending',
+                    timestamp: new Date().toLocaleString(),
+                    razorpayLink: paymentLink
+                };
+                sessionStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+                
+                // Redirect to Razorpay payment page
+                window.location.href = paymentLink;
+            } else {
+                alert('Invalid quantity selected');
+            }
+        }
     });
 });
 

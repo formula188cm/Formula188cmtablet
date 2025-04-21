@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="checkout.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
     <header>
@@ -17,46 +16,48 @@
     </header>
 
     <main class="checkout-container">
-        <div class="checkout-steps">
-            <div class="step completed">1. Address</div>
-            <div class="step active">2. Payment</div>
-            <div class="step">3. Complete</div>
+        <div class="order-summary-top">
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span id="subtotal">₹1,299.00</span>
+            </div>
+            <div class="summary-item">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total</span>
+                <span id="total">₹1,299.00</span>
+            </div>
         </div>
 
         <div class="checkout-content">
             <div class="payment-options">
                 <h2>Select Payment Method</h2>
-
-                <div class="payment-method">
-                    <input type="radio" id="online" name="payment" value="online" required>
-                    <label for="online">
+                
+                <div class="payment-method" data-method="online">
+                    <label>
+                        <input type="radio" name="payment" value="online">
                         <i class="fas fa-credit-card"></i>
-                        Online Payment (Razorpay)
-                        <span class="description">Pay securely with RazorPay</span>
+                        <div class="payment-info">
+                            <span class="payment-title">Pay Online</span>
+                            <span class="description">Credit/Debit Card, UPI, Net Banking</span>
+                        </div>
                     </label>
                 </div>
 
-                <div class="order-summary">
-                    <h3>Order Summary</h3>
-                    <div class="summary-item">
-                        <span>Product:</span>
-                        <span>Formula188cm Height Growth Supplement</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Price:</span>
-                        <span>₹999</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Quantity:</span>
-                        <span id="summaryQuantity">1</span>
-                    </div>
-                    <div class="summary-item total">
-                        <span>Total:</span>
-                        <span id="summaryTotal">₹999</span>
-                    </div>
+                <div class="payment-method" data-method="cod">
+                    <label>
+                        <input type="radio" name="payment" value="cod">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <div class="payment-info">
+                            <span class="payment-title">Cash on Delivery</span>
+                            <span class="description">Pay when you receive the product</span>
+                        </div>
+                    </label>
                 </div>
 
-                <button id="placeOrderBtn" class="continue-btn">Place Order</button>
+                <button id="proceed-payment" class="complete-order-btn" disabled>PROCEED WITH PAYMENT</button>
             </div>
         </div>
     </main>

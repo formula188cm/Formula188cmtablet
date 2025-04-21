@@ -4,19 +4,31 @@ document.addEventListener('DOMContentLoaded', function() {
     sessionStorage.removeItem('paymentDetails');
     sessionStorage.removeItem('orderDetails');
     
+    const basePrice = 1299;
     const quantitySelect = document.getElementById('quantity');
-    const summaryQuantity = document.getElementById('summaryQuantity');
-    const summaryTotal = document.getElementById('summaryTotal');
-    const basePrice = 999; // Base price of the product
+    const subtotalElement = document.getElementById('subtotal');
+    const totalElement = document.getElementById('total');
+    const completeOrderBtn = document.getElementById('complete-order-btn');
 
-    quantitySelect.addEventListener('change', function() {
-        const quantity = parseInt(this.value);
-        const total = basePrice * quantity;
-        
-        // Update summary section
-        summaryQuantity.textContent = quantity;
-        summaryTotal.textContent = `₹${total.toLocaleString('en-IN')}`;
-    });
+    function formatPrice(price) {
+        return '₹' + price.toLocaleString('en-IN') + '.00';
+    }
+
+    function updatePrices() {
+        const quantity = parseInt(quantitySelect.value);
+        const subtotal = basePrice * quantity;
+        const total = subtotal; // Since shipping is free
+
+        subtotalElement.textContent = formatPrice(subtotal);
+        totalElement.textContent = formatPrice(total);
+        completeOrderBtn.textContent = `COMPLETE ORDER - ${formatPrice(total)}`;
+    }
+
+    // Update prices when quantity changes
+    quantitySelect.addEventListener('change', updatePrices);
+
+    // Initialize prices
+    updatePrices();
 
     // Handle form submission and Google Sheets integration
     const addressForm = document.getElementById('addressForm');
@@ -24,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addressForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Validate form data
+        // Get and validate form data
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const email = document.getElementById('email').value.trim();
@@ -69,21 +81,24 @@ document.addEventListener('DOMContentLoaded', function() {
             pincode: pincode,
             landmark: document.getElementById('landmark').value.trim(),
             quantity: quantity,
-            total: summaryTotal.textContent,
+            total: totalElement.textContent,
             timestamp: new Date().toLocaleString(),
             orderStatus: 'pending',
-            paymentMethod: 'pending'
+            paymentMethod: 'pending',
+            orderId: 'ORD' + Math.floor(Math.random() * 1000000)
         };
 
         try {
             // Show loading state
-            const submitButton = document.querySelector('.continue-btn');
-            const originalText = submitButton.textContent;
+            const submitButton = document.getElementById('complete-order-btn');
             submitButton.textContent = 'Processing...';
             submitButton.disabled = true;
 
-            // Send data to Google Sheets
-            const response = await fetch('https://script.google.com/macros/s/AKfycbzBWLiNnFQQsaD8fWlquq3L3dbGklquj12ub0c79kcLWUZYuMmx1fEmdleB9odDUawJ/exec?sheet=Sheet4', {
+            // First store data in sessionStorage
+            sessionStorage.setItem('orderDetails', JSON.stringify(formData));
+
+            // Then send initial data to Google Sheets (Sheet4 for pending orders)
+            await fetch('https://script.google.com/macros/s/AKfycbzgsqR8bxhrjapBRhPCFT1hT3Dk7xCrAQYOD5XPneTibbhxqz8EfvEawU1a7v6xng8ccQ/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -91,18 +106,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(formData)
             });
-
-            // Store data in sessionStorage for payment page
-            sessionStorage.setItem('orderDetails', JSON.stringify(formData));
             
-            // Redirect to payment page
+            // Finally redirect to payment page
             window.location.href = 'payment.html';
         } catch (error) {
             console.error('Error:', error);
             alert('There was an error processing your order. Please try again.');
-        } finally {
-            // Reset button state
-            submitButton.textContent = originalText;
+            // Reset button state on error
+            submitButton.textContent = `COMPLETE ORDER - ${totalElement.textContent}`;
             submitButton.disabled = false;
         }
     });
