@@ -10,12 +10,27 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'checkout.html';
         return;
     }
+
+    // Define base prices
+    const basePrice = 1299;
+    const codPrice = 1499;
     
-    // Update summary amounts
+    // Update summary amounts based on payment method
     const subtotalElement = document.getElementById('subtotal');
     const totalElement = document.getElementById('total');
-    subtotalElement.textContent = orderDetails.total;
-    totalElement.textContent = orderDetails.total;
+    
+    // Function to update prices based on payment method
+    function updatePrices(paymentMethod) {
+        const quantity = parseInt(orderDetails.quantity);
+        const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
+        const subtotal = pricePerUnit * quantity;
+        
+        subtotalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+        totalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+        
+        // Update order details with new price
+        orderDetails.total = `₹${subtotal.toLocaleString()}.00`;
+    }
 
     // Define Razorpay payment links for different quantities
     const paymentLinks = {
@@ -40,8 +55,14 @@ document.addEventListener('DOMContentLoaded', function() {
             // Select the radio input
             const radio = this.querySelector('input[type="radio"]');
             radio.checked = true;
+            
+            // Update prices based on selected payment method
+            updatePrices(radio.value);
         });
     });
+
+    // Initialize prices with default payment method (online)
+    updatePrices('online');
 
     // Function to send order data to appropriate sheet
     async function sendToSheet(data, sheetName) {
@@ -87,10 +108,10 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'thank-you.html';
         } else {
             // For online payment
-            const quantity = parseInt(orderDetails.quantity);
-            const paymentLink = paymentLinks[quantity];
-            
-            if (paymentLink) {
+                const quantity = parseInt(orderDetails.quantity);
+                const paymentLink = paymentLinks[quantity];
+                
+                if (paymentLink) {
                 // Update order details with payment info
                 const onlineOrderData = {
                     ...orderDetails,

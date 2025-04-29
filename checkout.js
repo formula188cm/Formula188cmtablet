@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     sessionStorage.removeItem('orderDetails');
     
     const basePrice = 1299;
+    const codPrice = 1499;
+    let currentPrice = basePrice;
     const quantitySelect = document.getElementById('quantity');
     const subtotalElement = document.getElementById('subtotal');
     const totalElement = document.getElementById('total');
@@ -16,8 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updatePrices() {
         const quantity = parseInt(quantitySelect.value);
-        const subtotal = basePrice * quantity;
-        const total = subtotal; // Since shipping is free
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
+        currentPrice = pricePerUnit;
+        
+        const subtotal = pricePerUnit * quantity;
+        const total = subtotal;
 
         subtotalElement.textContent = formatPrice(subtotal);
         totalElement.textContent = formatPrice(total);
@@ -26,6 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update prices when quantity changes
     quantitySelect.addEventListener('change', updatePrices);
+
+    // Add event listener for payment method change
+    document.getElementById('paymentMethod').addEventListener('change', updatePrices);
 
     // Initialize prices
     updatePrices();

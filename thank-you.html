@@ -70,9 +70,18 @@
                 return;
             }
 
+            // Define base prices
+            const basePrice = 1299;
+            const codPrice = 1499;
+
+            // Calculate total based on payment method
+            const quantity = parseInt(orderDetails.quantity);
+            const pricePerUnit = paymentDetails.method === 'cod' ? codPrice : basePrice;
+            const total = pricePerUnit * quantity;
+
             // Update order details
             document.getElementById('orderQuantity').textContent = orderDetails.quantity;
-            document.getElementById('orderTotal').textContent = orderDetails.total;
+            document.getElementById('orderTotal').textContent = `₹${total.toLocaleString()}.00`;
             document.getElementById('paymentMethod').textContent = 
                 paymentDetails.method === 'cod' ? 'Cash on Delivery' : 'Online Payment';
 
