@@ -34,10 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Define Razorpay payment links for different quantities
     const paymentLinks = {
-        1: "https://rzp.io/rzp/ZZ7hEzR",  // Link for quantity 1 (₹1,299)
-        2: "https://rzp.io/rzp/QusxuLhM",   // Link for quantity 2 (₹2,598)
-        3: "https://rzp.io/rzp/m5yCXJ5H",   // Link for quantity 3 (₹3,897)
-        4: "https://rzp.io/rzp/UuxPG3hK"   // Link for quantity 4 (₹5,196)
+        1: "https://rzp.io/rzp/EoY1KE3",  // Link for quantity 1 (₹1,299)
+        2: "https://rzp.io/rzp/n5jCMCJ",   // Link for quantity 2 (₹2,598)
+        3: "https://rzp.io/rzp/G86mtdCg",   // Link for quantity 3 (₹3,897)
+        4: "https://rzp.io/rzp/JyeX9mZS"   // Link for quantity 4 (₹5,196)
     };
 
     // Payment method selection
