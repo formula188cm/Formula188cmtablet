@@ -33,16 +33,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Define Razorpay payment links for different quantities
-    const paymentLinks = {
-        1: "https://rzp.io/rzp/EoY1KE3",  // Link for quantity 1 (₹1,299)
-        2: "https://rzp.io/rzp/n5jCMCJ",   // Link for quantity 2 (₹2,598)
-        3: "https://rzp.io/rzp/G86mtdCg",   // Link for quantity 3 (₹3,897)
-        4: "https://rzp.io/rzp/JyeX9mZS"   // Link for quantity 4 (₹5,196)
-    };
+    // const paymentLinks = {
+    //     1: "https://rzp.io/rzp/ZZ7hEzR",  // Link for quantity 1 (₹1,299)
+    //     2: "https://rzp.io/rzp/QusxuLhM",   // Link for quantity 2 (₹2,598)
+    //     3: "https://rzp.io/rzp/m5yCXJ5H",   // Link for quantity 3 (₹3,897)
+    //     4: "https://rzp.io/rzp/UuxPG3hK"   // Link for quantity 4 (₹5,196)
+    // };
 
     // Payment method selection
     const paymentMethods = document.querySelectorAll('.payment-method');
-    const proceedButton = document.getElementById('proceed-payment');
+    const proceedBtn = document.getElementById('proceed-payment');
+    const modal = document.getElementById('payment-modal');
+    const closeModal = document.getElementById('close-modal');
+    const bankBtn = document.getElementById('bank-transfer-btn');
+    const upiBtn = document.getElementById('upi-transfer-btn');
+    const bankSection = document.getElementById('bank-transfer-section');
+    const upiSection = document.getElementById('upi-transfer-section');
+    const copyBtns = document.querySelectorAll('.copy-btn');
+    const bankPaidBtn = document.getElementById('bank-paid-btn');
+    const upiPaidBtn = document.getElementById('upi-paid-btn');
 
     paymentMethods.forEach(method => {
         method.addEventListener('click', function() {
@@ -51,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add active class to selected method
             this.classList.add('active');
             // Enable proceed button
-            proceedButton.disabled = false;
+            proceedBtn.disabled = false;
             // Select the radio input
             const radio = this.querySelector('input[type="radio"]');
             radio.checked = true;
@@ -67,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to send order data to appropriate sheet
     async function sendToSheet(data, sheetName) {
         try {
-            await fetch('https://script.google.com/macros/s/AKfycbzgsqR8bxhrjapBRhPCFT1hT3Dk7xCrAQYOD5XPneTibbhxqz8EfvEawU1a7v6xng8ccQ/exec?sheet=' + sheetName, {
+            await fetch('https://script.google.com/macros/s/AKfycbyl8SeWOIPd3iJMyIUi5EGAvB65JTn7vz1BlJYGLmUCkEE9Erv5PvNjJO4dUdj7mIpJyw/exec' + sheetName, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -81,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle payment proceed button
-    proceedButton.addEventListener('click', async function() {
+    proceedBtn.addEventListener('click', async function() {
         const selectedMethod = document.querySelector('input[name="payment"]:checked').value;
 
         if (selectedMethod === 'cod') {
@@ -134,18 +143,79 @@ document.addEventListener('DOMContentLoaded', function() {
                 sessionStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
                 
                 // Redirect to Razorpay payment page
-                window.location.href = paymentLink;
+                // window.location.href = paymentLink; // Disabled as per request
             } else {
                 alert('Invalid quantity selected');
             }
         }
     });
+
+    // Enable proceed button when online is selected
+    document.querySelectorAll('input[name="payment"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            proceedBtn.disabled = false;
+        });
+    });
+
+    proceedBtn.addEventListener('click', function() {
+        modal.style.display = 'block';
+        bankSection.style.display = 'none';
+        upiSection.style.display = 'none';
+    });
+
+    closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    bankBtn.addEventListener('click', function() {
+        bankSection.style.display = 'block';
+        upiSection.style.display = 'none';
+    });
+
+    upiBtn.addEventListener('click', function() {
+        upiSection.style.display = 'block';
+        bankSection.style.display = 'none';
+        // Generate QR code for UPI
+        const qr = new QRious({
+            element: document.getElementById('upi-qr'),
+            value: 'upi://pay?pa=ayushyaduvanshi56441@okhdfcbank&pn=Formula188cm',
+            size: 160
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('copy-btn')) {
+            const val = e.target.getAttribute('data-copy');
+            navigator.clipboard.writeText(val);
+            e.target.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                e.target.innerHTML = '<i class="fas fa-copy"></i>';
+            }, 1200);
+        }
+    });
+
+    bankPaidBtn.addEventListener('click', function() {
+        alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');
+        modal.style.display = 'none';
+    });
+
+    upiPaidBtn.addEventListener('click', function() {
+        alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');
+        modal.style.display = 'none';
+    });
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
 });
 
 // Function to update order status in Google Sheets
 async function updateOrderStatus(orderDetails) {
     try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzBWLiNnFQQsaD8fWlquq3L3dbGklquj12ub0c79kcLWUZYuMmx1fEmdleB9odDUawJ/exec?sheet=Sheet4', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzYgWiUpQOX33I3oV1HekqX3iScxJ0ezMP8pvWVz24L_al5dkzIk3Hf2Uo61QbYXeFmqA/exec?sheet=Sheet4', {
             method: 'POST',
             mode: 'no-cors',
             headers: {

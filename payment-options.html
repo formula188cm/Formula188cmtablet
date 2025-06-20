@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Options - Formula188cm</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Formula188cm</div>
+            <a href="checkout.html" class="back-btn" style="color:#fff;font-size:1.1rem;text-decoration:none;"><i class="fas fa-arrow-left"></i> Back</a>
+        </nav>
+    </header>
+    <main class="checkout-container">
+        <div class="order-summary-top">
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span id="subtotal">₹1,299.00</span>
+            </div>
+            <div class="summary-item">
+                <span>Shipping</span>
+                <span>Free</span>
+            </div>
+            <div class="summary-item total">
+                <span>Total</span>
+                <span id="total">₹1,299.00</span>
+            </div>
+        </div>
+        <section class="payment-options-section">
+            <h2>Select Payment Method</h2>
+            <div class="payment-methods-list">
+                <button class="method-btn active" data-method="bank">Bank Transfer</button>
+                <button class="method-btn" data-method="upi">UPI Transfer</button>
+                <button class="method-btn disabled" data-method="online" disabled>Online Payment (Coming Soon)</button>
+            </div>
+            <div id="bank-section" class="payment-method-section">
+                <h3>Bank Transfer Details</h3>
+                <div class="account-details">
+                    <div class="detail-row">Account Number: <span id="acc-no">067961900000815</span> <button class="copy-btn" data-copy="067961900000815"><i class="fas fa-copy"></i></button></div>
+                    <div class="detail-row">IFSC Code: <span id="ifsc">YESB0000679</span> <button class="copy-btn" data-copy="YESB0000679"><i class="fas fa-copy"></i></button></div>
+                    <div class="detail-row">Bank Name: <span id="bank-name">Yes Bank</span> <button class="copy-btn" data-copy="Yes Bank"><i class="fas fa-copy"></i></button></div>
+                    <div class="detail-row">Account Type: <span id="acc-type">Current</span> <button class="copy-btn" data-copy="Current"><i class="fas fa-copy"></i></button></div>
+                </div>
+                <div class="important-note">
+                    <strong>Note:</strong> After payment, please send the payment screenshot or details to WhatsApp: <a href="https://wa.me/918989252740" target="_blank">8989252740</a> or Email: <a href="mailto:formula188cm@gmail.com">formula188cm@gmail.com</a>
+                </div>
+                <ul class="important-points">
+                    <li>Double-check account number and IFSC before transferring.</li>
+                    <li>Use IMPS/NEFT/RTGS only (no UPI apps).</li>
+                    <li>Save your payment receipt for reference.</li>
+                    <li>Payments are non-refundable once processed.</li>
+                    <li>Do not share your payment details with anyone else.</li>
+                </ul>
+                <button class="complete-order-btn" id="bank-paid-btn">I Have Paid Now</button>
+            </div>
+            <div id="upi-section" class="payment-method-section" style="display:none;">
+                <h3>UPI Transfer</h3>
+                <div class="upi-details">
+                    <div class="detail-row">UPI ID: <span id="upi-id">ayushyaduvanshi56441@okhdfcbank</span> <button class="copy-btn" data-copy="ayushyaduvanshi56441@okhdfcbank"><i class="fas fa-copy"></i></button></div>
+                    <div class="detail-row"><img id="upi-qr" alt="UPI QR Code" style="max-width:160px;"></div>
+                </div>
+                <div class="important-note">
+                    <strong>Note:</strong> After payment, please send the payment screenshot or details to WhatsApp: <a href="https://wa.me/918989252740" target="_blank">8989252740</a> or Email: <a href="mailto:formula188cm@gmail.com">formula188cm@gmail.com</a>
+                </div>
+                <ul class="important-points">
+                    <li>Double-check UPI ID before paying.</li>
+                    <li>Save your payment receipt for reference.</li>
+                    <li>Payments are non-refundable once processed.</li>
+                    <li>Do not share your payment details with anyone else.</li>
+                </ul>
+                <button class="complete-order-btn" id="upi-paid-btn">I Have Paid Now</button>
+            </div>
+            <div id="online-section" class="payment-method-section" style="display:none;">
+                <h3>Online Payment (Coming Soon)</h3>
+                <div class="important-note">
+                    Online payment via Razorpay and other gateways will be available soon.
+                </div>
+            </div>
+            <div class="help-link">
+                <a href="https://wa.me/918989252740" target="_blank"><i class="fab fa-whatsapp"></i> Need help? Chat on WhatsApp</a>
+            </div>
+        </section>
+    </main>
+    <script src="payment-options.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... existing code ...
+        // Update subtotal/total dynamically from sessionStorage
+        const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+        const subtotalElement = document.getElementById('subtotal');
+        const totalElement = document.getElementById('total');
+        const basePrice = 1299;
+        const codPrice = 1499;
+        let quantity = 1;
+        let paymentMethod = 'online';
+        if (orderDetails) {
+            quantity = parseInt(orderDetails.quantity) || 1;
+            paymentMethod = orderDetails.paymentMethod || 'online';
+        }
+        const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
+        const subtotal = pricePerUnit * quantity;
+        subtotalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+        totalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+    });
+    </script>
+</body>
+</html> 

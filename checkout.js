@@ -39,6 +39,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize prices
     updatePrices();
 
+    // If mainQuantity is set, use it
+    const mainQty = sessionStorage.getItem('mainQuantity');
+    if (mainQty) {
+        quantitySelect.value = mainQty;
+        updatePrices();
+        sessionStorage.removeItem('mainQuantity');
+    }
+
     // Handle form submission and Google Sheets integration
     const addressForm = document.getElementById('addressForm');
     
@@ -106,15 +114,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // First store data in sessionStorage
             sessionStorage.setItem('orderDetails', JSON.stringify(formData));
 
-            // Then send initial data to Google Sheets (Sheet4 for pending orders)
-            await fetch('https://script.google.com/macros/s/AKfycbzgsqR8bxhrjapBRhPCFT1hT3Dk7xCrAQYOD5XPneTibbhxqz8EfvEawU1a7v6xng8ccQ/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+            // // Then send initial data to Google Sheets (Sheet4 for pending orders)
+            // await fetch('https://script.google.com/macros/s/AKfycbwVHFIxBtw9ZLuFXIV7O27tOJYKbfsB0fl46EeBVp_syIAOkCq8uihyUAoziTZ6_in7Qg/exec?sheet=Sheet4', {
+            //     method: 'POST',
+            //     mode: 'no-cors',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(formData)
+            // });
             
             // Finally redirect to payment page
             window.location.href = 'payment.html';

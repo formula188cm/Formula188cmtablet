@@ -14,7 +14,6 @@
             <div class="logo">Formula188cm</div>
         </nav>
     </header>
-
     <main class="checkout-container">
         <div class="order-summary-top">
             <div class="summary-item">
@@ -30,38 +29,184 @@
                 <span id="total">₹1,299.00</span>
             </div>
         </div>
-
         <div class="checkout-content">
             <div class="payment-options">
                 <h2>Select Payment Method</h2>
-
-                <div class="payment-method" data-method="online">
-                    <label>
-                        <input type="radio" name="payment" value="online">
-                        <i class="fas fa-credit-card"></i>
-                        <div class="payment-info">
-                            <span class="payment-title">Pay Online</span>
-                            <span class="description">Credit/Debit Card, UPI, Net Banking</span>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="payment-method" data-method="cod">
-                    <label>
-                        <input type="radio" name="payment" value="cod">
+                <div class="payment-method" data-method="cod" id="cod-method" style="margin-bottom:18px;">
+                    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:1.08rem;">
+                        <input type="radio" name="payment" value="cod" id="cod-radio" style="accent-color:#000;width:18px;height:18px;">
                         <i class="fas fa-money-bill-wave"></i>
                         <div class="payment-info">
                             <span class="payment-title">Cash on Delivery</span>
-                            <span class="description">Pay when you receive the product</span>
-                    </div>
+                            <span class="description" style="font-size:0.97rem;color:#555;">Pay when you receive the product</span>
+                        </div>
                     </label>
                 </div>
-
-                <button id="proceed-payment" class="complete-order-btn" disabled>PROCEED WITH PAYMENT</button>
+                <div class="payment-method" data-method="online" id="online-method">
+                    <label style="display:flex;align-items:center;gap:12px;cursor:pointer;font-size:1.08rem;">
+                        <input type="radio" name="payment" value="online" id="online-radio" style="accent-color:#000;width:18px;height:18px;">
+                        <i class="fas fa-credit-card"></i>
+                        <div class="payment-info">
+                            <span class="payment-title">Pay Online</span>
+                            <span class="description" style="font-size:0.97rem;color:#555;">Credit/Debit Card, UPI, Net Banking</span>
+                        </div>
+                    </label>
+                    <div class="online-suboptions" id="online-suboptions" style="display:none;margin-top:18px;">
+                        <div style="display:flex;flex-direction:column;gap:14px;">
+                            <label style="display:flex;align-items:center;gap:10px;font-size:1.08rem;">
+                                <input type="radio" name="online-method" value="bank" id="bank-radio" style="accent-color:#000;width:18px;height:18px;">
+                                <span>Bank Transfer</span>
+                            </label>
+                            <label style="display:flex;align-items:center;gap:10px;font-size:1.08rem;">
+                                <input type="radio" name="online-method" value="upi" id="upi-radio" style="accent-color:#000;width:18px;height:18px;">
+                                <span>UPI Transfer</span>
+                    </label>
+                </div>
+                    </div>
+                </div>
+                <button id="proceed-payment" class="complete-order-btn" style="background:#000;color:#fff;margin-top:28px;display:block;width:100%;font-size:1.08rem;font-weight:600;">PROCEED PAYMENT</button>
             </div>
         </div>
     </main>
-
-    <script src="payment.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const onlineRadio = document.getElementById('online-radio');
+        const codRadio = document.getElementById('cod-radio');
+        const suboptions = document.getElementById('online-suboptions');
+        const proceedBtn = document.getElementById('proceed-payment');
+        const paymentMethods = document.querySelectorAll('.payment-method');
+        // Highlight main payment method
+        function updateMainSelection() {
+            paymentMethods.forEach(div => div.classList.remove('selected'));
+            const selected = document.querySelector('input[name="payment"]:checked');
+            if (selected) {
+                selected.closest('.payment-method').classList.add('selected');
+            }
+        }
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updateMainSelection();
+            });
+        });
+        // Hide suboptions by default
+        suboptions.style.display = 'none';
+        onlineRadio.addEventListener('change', function() {
+            if (this.checked) {
+                suboptions.style.display = 'block';
+                suboptions.style.animation = 'fadeInSub 0.3s';
+            }
+        });
+        codRadio.addEventListener('change', function() {
+            suboptions.style.display = 'none';
+        });
+        // Highlight sub-option
+        const subLabels = suboptions.querySelectorAll('label');
+        function updateSubSelection() {
+            subLabels.forEach(lab => lab.classList.remove('selected'));
+            const selected = document.querySelector('input[name="online-method"]:checked');
+            if (selected) {
+                selected.closest('label').classList.add('selected');
+            }
+        }
+        suboptions.querySelectorAll('input[name="online-method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updateSubSelection();
+            });
+        });
+        // Initial highlight if pre-selected
+        updateMainSelection();
+        updateSubSelection();
+        proceedBtn.addEventListener('click', async function(e) {
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            if (!selectedPayment) {
+                alert('Please select a payment method.');
+                return;
+            }
+            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
+            if (selectedPayment.value === 'cod') {
+                // COD flow: send to Sheet5
+                const paymentDetails = {
+                    method: 'cod',
+                    orderStatus: 'confirmed',
+                    timestamp: new Date().toLocaleString()
+                };
+                const codOrderData = {
+                    ...orderDetails,
+                    paymentMethod: 'cod',
+                    orderStatus: 'confirmed',
+                    paymentTimestamp: new Date().toLocaleString()
+                };
+                try {
+                    await fetch('https://script.google.com/macros/s/AKfycbwVHFIxBtw9ZLuFXIV7O27tOJYKbfsB0fl46EeBVp_syIAOkCq8uihyUAoziTZ6_in7Qg/exec?sheet=Sheet5', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(codOrderData)
+                    });
+                } catch (e) {}
+                sessionStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
+                window.location.href = 'thank-you.html';
+                return;
+            }
+            // Online selected
+            const selectedOnline = document.querySelector('input[name="online-method"]:checked');
+            if (!selectedOnline) {
+                alert('Please select Bank Transfer or UPI Transfer.');
+                return;
+            }
+            // Send to Sheet7 for online payment (only orderDetails + paymentMethod)
+            const onlineOrderData = {
+                ...orderDetails,
+                paymentMethod: 'online'
+            };
+            try {
+                await fetch('https://script.google.com/macros/s/AKfycbwVHFIxBtw9ZLuFXIV7O27tOJYKbfsB0fl46EeBVp_syIAOkCq8uihyUAoziTZ6_in7Qg/exec?sheet=Sheet7', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(onlineOrderData)
+                });
+            } catch (e) {}
+            if (selectedOnline.value === 'bank') {
+                window.location.href = 'bank-transfer.html';
+                return;
+            }
+            if (selectedOnline.value === 'upi') {
+                window.location.href = 'upi-transfer.html';
+                return;
+            }
+        });
+        // Update subtotal/total dynamically from sessionStorage
+        const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+        const subtotalElement = document.getElementById('subtotal');
+        const totalElement = document.getElementById('total');
+        const basePrice = 1299;
+        const codPrice = 1499;
+        let quantity = 1;
+        let paymentMethod = 'online';
+        if (orderDetails) {
+            quantity = parseInt(orderDetails.quantity) || 1;
+            paymentMethod = orderDetails.paymentMethod || 'online';
+        }
+        const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
+        const subtotal = pricePerUnit * quantity;
+        subtotalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+        totalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+    });
+    </script>
+    <style>
+    @keyframes fadeInSub {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .online-suboptions { transition: all 0.3s; }
+    .complete-order-btn { background:#000;color:#fff; }
+    .payment-method { margin-bottom: 18px; }
+    .payment-title { font-weight:600; }
+    </style>
 </body>
 </html> 

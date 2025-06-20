@@ -75,12 +75,12 @@
             const codPrice = 1499;
 
             // Calculate total based on payment method
-            const quantity = parseInt(orderDetails.quantity);
+            const quantity = parseInt(orderDetails.quantity) || 1;
             const pricePerUnit = paymentDetails.method === 'cod' ? codPrice : basePrice;
             const total = pricePerUnit * quantity;
 
             // Update order details
-            document.getElementById('orderQuantity').textContent = orderDetails.quantity;
+            document.getElementById('orderQuantity').textContent = quantity;
             document.getElementById('orderTotal').textContent = `₹${total.toLocaleString()}.00`;
             document.getElementById('paymentMethod').textContent = 
                 paymentDetails.method === 'cod' ? 'Cash on Delivery' : 'Online Payment';
