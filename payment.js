@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to send order data to appropriate sheet
     async function sendToSheet(data, sheetName) {
         try {
-            await fetch('https://script.google.com/macros/s/AKfycbyl8SeWOIPd3iJMyIUi5EGAvB65JTn7vz1BlJYGLmUCkEE9Erv5PvNjJO4dUdj7mIpJyw/exec' + sheetName, {
+            await fetch('https://script.google.com/macros/s/AKfycbzLX07ZUl0JVEoknNUAb1KqURugPVE15UZTcTuGKyfz2urln5aN4xPqDH7HLFxPMagK/exec?sheet=' + sheetName, {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -109,8 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 paymentTimestamp: new Date().toLocaleString()
             };
 
-            // Send to Sheet5 for COD orders
-            await sendToSheet(codOrderData, 'Sheet5');
+            // Send to Sheet9 for COD orders
+            await sendToSheet(codOrderData, 'Sheet9');
             
             // Store payment details and redirect
             sessionStorage.setItem('paymentDetails', JSON.stringify(paymentDetails));
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to update order status in Google Sheets
 async function updateOrderStatus(orderDetails) {
     try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzYgWiUpQOX33I3oV1HekqX3iScxJ0ezMP8pvWVz24L_al5dkzIk3Hf2Uo61QbYXeFmqA/exec?sheet=Sheet4', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzLX07ZUl0JVEoknNUAb1KqURugPVE15UZTcTuGKyfz2urln5aN4xPqDH7HLFxPMagK/exec?sheet=Sheet4', {
             method: 'POST',
             mode: 'no-cors',
             headers: {

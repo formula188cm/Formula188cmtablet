@@ -124,7 +124,7 @@
             }
             const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
             if (selectedPayment.value === 'cod') {
-                // COD flow: send to Sheet5
+                // COD flow: send to Sheet9
                 const paymentDetails = {
                     method: 'cod',
                     orderStatus: 'confirmed',
@@ -137,7 +137,7 @@
                     paymentTimestamp: new Date().toLocaleString()
                 };
                 try {
-                    await fetch('https://script.google.com/macros/s/AKfycbwVHFIxBtw9ZLuFXIV7O27tOJYKbfsB0fl46EeBVp_syIAOkCq8uihyUAoziTZ6_in7Qg/exec?sheet=Sheet5', {
+                    await fetch('https://script.google.com/macros/s/AKfycbzLX07ZUl0JVEoknNUAb1KqURugPVE15UZTcTuGKyfz2urln5aN4xPqDH7HLFxPMagK/exec?sheet=Sheet9', {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: {
@@ -162,7 +162,7 @@
                 paymentMethod: 'online'
             };
             try {
-                await fetch('https://script.google.com/macros/s/AKfycbwVHFIxBtw9ZLuFXIV7O27tOJYKbfsB0fl46EeBVp_syIAOkCq8uihyUAoziTZ6_in7Qg/exec?sheet=Sheet7', {
+                await fetch('https://script.google.com/macros/s/AKfycbzLX07ZUl0JVEoknNUAb1KqURugPVE15UZTcTuGKyfz2urln5aN4xPqDH7HLFxPMagK/exec?sheet=Sheet7', {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
