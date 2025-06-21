@@ -86,6 +86,7 @@
         document.querySelectorAll('input[name="payment"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 updateMainSelection();
+                updatePrices();
             });
         });
         // Hide suboptions by default
@@ -180,22 +181,34 @@
                 return;
             }
         });
-        // Update subtotal/total dynamically from sessionStorage
-        const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
-        const subtotalElement = document.getElementById('subtotal');
-        const totalElement = document.getElementById('total');
-        const basePrice = 1299;
-        const codPrice = 1499;
-        let quantity = 1;
-        let paymentMethod = 'online';
-        if (orderDetails) {
-            quantity = parseInt(orderDetails.quantity) || 1;
-            paymentMethod = orderDetails.paymentMethod || 'online';
+        // Function to update prices based on payment method
+        function updatePrices() {
+            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
+            const subtotalElement = document.getElementById('subtotal');
+            const totalElement = document.getElementById('total');
+            const basePrice = 1299;
+            const codPrice = 1499;
+            let quantity = 1;
+            let paymentMethod = 'online';
+            
+            if (orderDetails) {
+                quantity = parseInt(orderDetails.quantity) || 1;
+            }
+            
+            // Get current selected payment method
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            if (selectedPayment) {
+                paymentMethod = selectedPayment.value;
+            }
+            
+            const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
+            const subtotal = pricePerUnit * quantity;
+            subtotalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+            totalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
         }
-        const pricePerUnit = paymentMethod === 'cod' ? codPrice : basePrice;
-        const subtotal = pricePerUnit * quantity;
-        subtotalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
-        totalElement.textContent = `₹${subtotal.toLocaleString()}.00`;
+        
+        // Initial price update
+        updatePrices();
     });
     </script>
     <style>
