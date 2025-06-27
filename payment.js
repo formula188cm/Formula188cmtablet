@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Define base prices
-    const basePrice = 1299;
-    const codPrice = 1499;
+    const basePrice = 999;
+    const codPrice = 1199;
     
     // Update summary amounts based on payment method
     const subtotalElement = document.getElementById('subtotal');
