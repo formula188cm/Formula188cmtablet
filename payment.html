@@ -75,6 +75,31 @@
         const suboptions = document.getElementById('online-suboptions');
         const proceedBtn = document.getElementById('proceed-payment');
         const paymentMethods = document.querySelectorAll('.payment-method');
+        
+        // Get the payment method from checkout page
+        const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
+        const selectedPaymentMethod = orderDetails.paymentMethod || 'online';
+        
+        // Hide/show payment methods based on selection from checkout
+        const codMethod = document.getElementById('cod-method');
+        const onlineMethod = document.getElementById('online-method');
+        
+        if (selectedPaymentMethod === 'cod') {
+            // Hide online payment option
+            onlineMethod.style.display = 'none';
+            // Auto-select COD
+            codRadio.checked = true;
+            codMethod.classList.add('selected');
+        } else {
+            // Hide COD option
+            codMethod.style.display = 'none';
+            // Auto-select online payment
+            onlineRadio.checked = true;
+            onlineMethod.classList.add('selected');
+            // Show suboptions for online payment
+            suboptions.style.display = 'block';
+        }
+        
         // Highlight main payment method
         function updateMainSelection() {
             paymentMethods.forEach(div => div.classList.remove('selected'));
@@ -83,14 +108,14 @@
                 selected.closest('.payment-method').classList.add('selected');
             }
         }
+        
         document.querySelectorAll('input[name="payment"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 updateMainSelection();
                 updatePrices();
             });
         });
-        // Hide suboptions by default
-        suboptions.style.display = 'none';
+        
         onlineRadio.addEventListener('change', function() {
             if (this.checked) {
                 suboptions.style.display = 'block';
@@ -100,6 +125,7 @@
         codRadio.addEventListener('change', function() {
             suboptions.style.display = 'none';
         });
+        
         // Highlight sub-option
         const subLabels = suboptions.querySelectorAll('label');
         function updateSubSelection() {
@@ -114,16 +140,18 @@
                 updateSubSelection();
             });
         });
+        
         // Initial highlight if pre-selected
         updateMainSelection();
         updateSubSelection();
+        
         proceedBtn.addEventListener('click', async function(e) {
             const selectedPayment = document.querySelector('input[name="payment"]:checked');
             if (!selectedPayment) {
                 alert('Please select a payment method.');
                 return;
             }
-            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
+            
             if (selectedPayment.value === 'cod') {
                 // COD flow: send to Sheet9
                 const paymentDetails = {
@@ -151,12 +179,14 @@
                 window.location.href = 'thank-you.html';
                 return;
             }
+            
             // Online selected
             const selectedOnline = document.querySelector('input[name="online-method"]:checked');
             if (!selectedOnline) {
                 alert('Please select Bank Transfer or UPI Transfer.');
                 return;
             }
+            
             // Send to Sheet7 for online payment (only orderDetails + paymentMethod)
             const onlineOrderData = {
                 ...orderDetails,
@@ -172,6 +202,7 @@
                     body: JSON.stringify(onlineOrderData)
                 });
             } catch (e) {}
+            
             if (selectedOnline.value === 'bank') {
                 window.location.href = 'bank-transfer.html';
                 return;
@@ -181,6 +212,7 @@
                 return;
             }
         });
+        
         // Function to update prices based on payment method
         function updatePrices() {
             const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));

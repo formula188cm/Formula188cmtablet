@@ -98,10 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
             pincode: pincode,
             landmark: document.getElementById('landmark').value.trim(),
             quantity: quantity,
+            paymentMethod: document.getElementById('paymentMethod').value,
             total: totalElement.textContent,
             timestamp: new Date().toLocaleString(),
             orderStatus: 'pending',
-            paymentMethod: 'pending',
             orderId: 'ORD' + Math.floor(Math.random() * 1000000)
         };
 
