@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = {
         bank: document.getElementById('bank-section'),
         upi: document.getElementById('upi-section'),
-        online: document.getElementById('online-section')
+        online: document.getElementById('online-section'),
+        qr: document.getElementById('qr-section')
     };
     methodBtns.forEach(btn => {
         btn.addEventListener('click', function() {
