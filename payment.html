@@ -113,6 +113,7 @@
             radio.addEventListener('change', function() {
                 updateMainSelection();
                 updatePrices();
+                updateButtonText(); // Update button text on payment method change
             });
         });
         
@@ -144,6 +145,7 @@
         // Initial highlight if pre-selected
         updateMainSelection();
         updateSubSelection();
+        updateButtonText(); // Initial button text update
         
         proceedBtn.addEventListener('click', async function(e) {
             const selectedPayment = document.querySelector('input[name="payment"]:checked');
@@ -241,6 +243,17 @@
         
         // Initial price update
         updatePrices();
+
+        function updateButtonText() {
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            if (selectedPayment && selectedPayment.value === 'cod') {
+                proceedBtn.textContent = 'CONFIRM ORDER';
+            } else {
+                proceedBtn.textContent = 'PROCEED PAYMENT';
+            }
+        }
+        // Update button text on load and when payment method changes
+        updateButtonText();
     });
     </script>
     <style>
