@@ -19,7 +19,7 @@
         <div class="order-summary-top">
             <div class="summary-item">
                 <span>Subtotal</span>
-                <span id="subtotal">₹1,299.00</span>
+                <span id="subtotal">₹1,099.00</span>
             </div>
             <div class="summary-item">
                 <span>Shipping</span>
@@ -27,7 +27,7 @@
             </div>
             <div class="summary-item total">
                 <span>Total</span>
-                <span id="total">₹1,299.00</span>
+                <span id="total">₹1,099.00</span>
             </div>
         </div>
         <section class="payment-options-section">
@@ -61,7 +61,7 @@
                 <h3>UPI Transfer</h3>
                 <div class="upi-details">
                     <div class="detail-row">UPI ID: <span id="upi-id">ayushyaduvanshi56441@okhdfcbank</span> <button class="copy-btn" data-copy="ayushyaduvanshi56441@okhdfcbank"><i class="fas fa-copy"></i></button></div>
-                    <div class="detail-row"><img id="upi-qr" alt="UPI QR Code" style="max-width:160px;"></div>
+                    <div class="detail-row"><img id="upi-qr" src="qr code.png.jpeg" alt="UPI QR Code" style="max-width:160px;"></div>
                 </div>
                 <div class="important-note">
                     <strong>Note:</strong> After payment, please send the payment screenshot or details to WhatsApp: <a href="https://wa.me/918989252740" target="_blank">8989252740</a> or Email: <a href="mailto:formula188cm@gmail.com">formula188cm@gmail.com</a>
@@ -93,8 +93,8 @@
         const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails'));
         const subtotalElement = document.getElementById('subtotal');
         const totalElement = document.getElementById('total');
-        const basePrice = 999;
-        const codPrice = 1199;
+        const basePrice = 1099;
+        const codPrice = 1299;
         let quantity = 1;
         let paymentMethod = 'online';
         if (orderDetails) {

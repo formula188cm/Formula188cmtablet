@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     sessionStorage.removeItem('paymentDetails');
     sessionStorage.removeItem('orderDetails');
     
-    const basePrice = 999;
-    const codPrice = 1199;
+    const basePrice = 1099;
+    const codPrice = 1299;
     let currentPrice = basePrice;
     const quantitySelect = document.getElementById('quantity');
     const subtotalElement = document.getElementById('subtotal');

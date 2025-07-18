@@ -14,12 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(sections).forEach(key => sections[key].style.display = 'none');
             sections[btn.getAttribute('data-method')].style.display = 'block';
             if (btn.getAttribute('data-method') === 'upi') {
-                // Generate QR code for UPI
-                new QRious({
-                    element: document.getElementById('upi-qr'),
-                    value: 'upi://pay?pa=ayushyaduvanshi56441@okhdfcbank&pn=Formula188cm',
-                    size: 160
-                });
+                // Show static QR image (no QRious)
+                document.getElementById('upi-qr').src = 'qr code.png.jpeg';
             }
         });
     });
