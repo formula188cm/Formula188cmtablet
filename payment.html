@@ -126,6 +126,10 @@ src="https://www.facebook.com/tr?id=1971818573593848&ev=PageView&noscript=1"
                                         <i class="fas fa-credit-card" style="font-size:1.5rem;margin-bottom:8px;color:#ff6b35;"></i>
                                         <span style="font-size:0.85rem;text-align:center;line-height:1.2;">CRED</span>
                                     </button>
+                                    <button class="upi-app-btn" data-app="navi" data-url="navi://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px 10px;background:#fff;border:2px solid #e9ecef;border-radius:10px;cursor:pointer;transition:all 0.3s ease;text-decoration:none;color:#333;font-size:0.9rem;font-weight:500;min-height:80px;">
+                                        <i class="fas fa-ship" style="font-size:1.5rem;margin-bottom:8px;color:#1e40af;"></i>
+                                        <span style="font-size:0.85rem;text-align:center;line-height:1.2;">Navi UPI</span>
+                                    </button>
                                 </div>
                                 <div style="margin-top:12px;font-size:0.95rem;color:#666;text-align:center;">
                                     <i class="fas fa-info-circle"></i> Click on your preferred UPI app to open it directly
@@ -222,12 +226,63 @@ src="https://www.facebook.com/tr?id=1971818573593848&ev=PageView&noscript=1"
                 const upiAppsSection = document.getElementById('upi-apps-section');
                 if (this.value === 'upi') {
                     upiAppsSection.style.display = 'block';
+                    // Update UPI app URLs with current quantity
+                    updateUPIAppUrls();
                 } else {
                     upiAppsSection.style.display = 'none';
                 }
             });
         });
         
+        // Function to update UPI app URLs with dynamic amount
+        function updateUPIAppUrls() {
+            const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
+            const quantity = parseInt(orderDetails.quantity) || 1;
+            const basePrice = 1099;
+            const totalAmount = basePrice * quantity;
+            
+            // Update all UPI app buttons with new amount
+            const upiButtons = document.querySelectorAll('.upi-app-btn');
+            upiButtons.forEach(btn => {
+                const app = btn.getAttribute('data-app');
+                let newUrl = '';
+                
+                switch(app) {
+                    case 'gpay':
+                        newUrl = `tez://upi/pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'paytm':
+                        newUrl = `paytmmp://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'bhim':
+                        newUrl = `bhim://upi/pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'amazon':
+                        newUrl = `amazonpay://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'mobikwik':
+                        newUrl = `mobikwik://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'freecharge':
+                        newUrl = `freecharge://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'jupiter':
+                        newUrl = `jupiter://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'cred':
+                        newUrl = `cred://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                    case 'navi':
+                        newUrl = `navi://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=${totalAmount}&cu=INR`;
+                        break;
+                }
+                
+                if (newUrl) {
+                    btn.setAttribute('data-url', newUrl);
+                }
+            });
+        }
+
         // UPI App selection handling
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('upi-app-btn') || e.target.closest('.upi-app-btn')) {
@@ -260,6 +315,9 @@ src="https://www.facebook.com/tr?id=1971818573593848&ev=PageView&noscript=1"
         updateMainSelection();
         updateSubSelection();
         updateButtonText(); // Initial button text update
+        
+        // Update UPI app URLs on page load
+        updateUPIAppUrls();
         
         proceedBtn.addEventListener('click', async function(e) {
             const selectedPayment = document.querySelector('input[name="payment"]:checked');
@@ -328,6 +386,8 @@ src="https://www.facebook.com/tr?id=1971818573593848&ev=PageView&noscript=1"
                 const upiAppsSection = document.getElementById('upi-apps-section');
                 if (upiAppsSection.style.display === 'none') {
                     upiAppsSection.style.display = 'block';
+                    // Update UPI app URLs with current quantity
+                    updateUPIAppUrls();
                 }
                 alert('Please select your preferred UPI app from the options below.');
                 return;

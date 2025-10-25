@@ -84,6 +84,23 @@
         const total = pricePerUnit * quantity;
         qtyEl.textContent = quantity;
         totalEl.textContent = `₹${total.toLocaleString()}.00`;
+        
+        // Update QR code based on total amount
+        const qrImage = document.querySelector('img[alt="UPI QR Code"]');
+        if (qrImage) {
+            let qrCodeFile = 'qr code.png.jpg'; // Default QR code
+            
+            if (total === 2198) {
+                qrCodeFile = '2198.jpeg';
+            } else if (total === 3297) {
+                qrCodeFile = '3297.jpeg';
+            } else if (total === 4396) {
+                qrCodeFile = '4396.jpeg';
+            }
+            // For 1099 and other amounts, use default QR code
+            
+            qrImage.src = qrCodeFile;
+        }
     });
     </script>
 </body>

@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(sections).forEach(key => sections[key].style.display = 'none');
             sections[btn.getAttribute('data-method')].style.display = 'block';
             if (btn.getAttribute('data-method') === 'upi') {
-                // Show static QR image (no QRious)
-                document.getElementById('upi-qr').src = 'qr code.png.jpeg';
+                // Show dynamic QR image based on amount
+                updateQRCode();
             }
         });
     });
@@ -38,6 +38,30 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('upi-paid-btn').addEventListener('click', function() {
         alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');
     });
+
+    // Function to update QR code based on total amount
+    function updateQRCode() {
+        const orderDetails = JSON.parse(sessionStorage.getItem('orderDetails')) || {};
+        const quantity = parseInt(orderDetails.quantity) || 1;
+        const basePrice = 1099;
+        const total = basePrice * quantity;
+        
+        const qrImage = document.getElementById('upi-qr');
+        if (qrImage) {
+            let qrCodeFile = 'qr code.png.jpeg'; // Default QR code
+            
+            if (total === 2198) {
+                qrCodeFile = '2198.jpeg';
+            } else if (total === 3297) {
+                qrCodeFile = '3297.jpeg';
+            } else if (total === 4396) {
+                qrCodeFile = '4396.jpeg';
+            }
+            // For 1099 and other amounts, use default QR code
+            
+            qrImage.src = qrCodeFile;
+        }
+    }
 
     // UPI App selection handling
     document.addEventListener('click', function(e) {
