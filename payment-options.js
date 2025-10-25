@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(sections).forEach(key => sections[key].style.display = 'none');
             sections[btn.getAttribute('data-method')].style.display = 'block';
             if (btn.getAttribute('data-method') === 'upi') {
-                // Generate dynamic UPI QR code
-                generateUPIQR();
+                // Show static QR image (no QRious)
+                document.getElementById('upi-qr').src = 'qr code.png.jpeg';
             }
         });
     });
@@ -31,148 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 1200);
         }
     });
-    // UPI Payment button handler
-    document.getElementById('upi-pay-btn').addEventListener('click', function() {
-        const upiId = 'ayushyaduvanshi56441@okicici';
-        const amount = '1099';
-        const payeeName = 'Ayush Kumar';
-        const transactionRef = 'FORMULA188CM';
-        
-        // Detect user agent to provide PhonePe-specific links
-        const userAgent = navigator.userAgent.toLowerCase();
-        const isAndroid = userAgent.includes('android');
-        const isIOS = userAgent.includes('iphone') || userAgent.includes('ipad');
-        
-        // Try multiple UPI deep link formats with PhonePe-specific formats
-        const upiLinks = [
-            // Standard UPI format
-            `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`,
-            // PhonePe specific format
-            `phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`,
-            // Alternative PhonePe format
-            `phonepe://pay?pa=${upiId}&am=${amount}&cu=INR`,
-            // Standard without transaction ref
-            `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`,
-            // Minimal format
-            `upi://pay?pa=${upiId}&am=${amount}&cu=INR`,
-            // Very minimal
-            `upi://pay?pa=${upiId}&am=${amount}`,
-            // PhonePe minimal
-            `phonepe://pay?pa=${upiId}&am=${amount}`
-        ];
-        
-        let linkIndex = 0;
-        const tryNextLink = () => {
-            if (linkIndex < upiLinks.length) {
-                const link = upiLinks[linkIndex];
-                const timeout = setTimeout(() => {
-                    linkIndex++;
-                    tryNextLink();
-                }, 2000);
-                
-                window.location.href = link;
-                
-                // Clear timeout if user navigates away
-                window.addEventListener('beforeunload', () => clearTimeout(timeout));
-            } else {
-                // Enhanced fallback with PhonePe-specific instructions
-                const fallbackMessage = `UPI app could not be opened automatically. Please try one of these methods:
-
-Method 1 - Manual UPI Entry:
-1. Open your UPI app (PhonePe/Google Pay/Paytm)
-2. Enter UPI ID: ${upiId}
-3. Enter amount: ₹${amount}
-4. Complete the payment
-
-Method 2 - For PhonePe specifically:
-1. Open PhonePe app
-2. Go to "Send Money"
-3. Enter UPI ID: ${upiId}
-4. Enter amount: ₹${amount}
-5. Add note: ${transactionRef}
-6. Complete payment
-
-Method 3 - Use QR Code:
-Scan the QR code below with your UPI app
-
-Method 4 - Contact Support:
-WhatsApp: 8989252740 for assistance`;
-                
-                alert(fallbackMessage);
-            }
-        };
-        
-        tryNextLink();
-    });
-
-    // PhonePe specific button handler
-    document.getElementById('phonepe-pay-btn').addEventListener('click', function() {
-        const upiId = 'ayushyaduvanshi56441@okicici';
-        const amount = '1099';
-        const payeeName = 'Ayush Kumar';
-        const transactionRef = 'FORMULA188CM';
-        
-        // PhonePe specific deep link formats
-        const phonepeLinks = [
-            // PhonePe direct format
-            `phonepe://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`,
-            // PhonePe with minimal parameters
-            `phonepe://pay?pa=${upiId}&am=${amount}&cu=INR`,
-            // PhonePe with just UPI ID and amount
-            `phonepe://pay?pa=${upiId}&am=${amount}`,
-            // Alternative PhonePe format
-            `phonepe://send?pa=${upiId}&am=${amount}`,
-            // Standard UPI format as fallback
-            `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`
-        ];
-        
-        let linkIndex = 0;
-        const tryNextLink = () => {
-            if (linkIndex < phonepeLinks.length) {
-                const link = phonepeLinks[linkIndex];
-                const timeout = setTimeout(() => {
-                    linkIndex++;
-                    tryNextLink();
-                }, 2000);
-                
-                window.location.href = link;
-                
-                // Clear timeout if user navigates away
-                window.addEventListener('beforeunload', () => clearTimeout(timeout));
-            } else {
-                // PhonePe specific fallback instructions
-                const phonepeMessage = `PhonePe could not be opened automatically. Please try these PhonePe-specific methods:
-
-Method 1 - Direct PhonePe Entry:
-1. Open PhonePe app
-2. Tap "Send Money"
-3. Enter UPI ID: ${upiId}
-4. Enter amount: ₹${amount}
-5. Add note: ${transactionRef}
-6. Complete payment
-
-Method 2 - PhonePe QR Scanner:
-1. Open PhonePe app
-2. Tap "Scan & Pay"
-3. Scan the QR code below
-
-Method 3 - PhonePe Mobile Number:
-1. Open PhonePe app
-2. Go to "Send Money"
-3. Enter mobile number: 8989252740
-4. Enter amount: ₹${amount}
-5. Complete payment
-
-Method 4 - Contact Support:
-WhatsApp: 8989252740 for assistance`;
-                
-                alert(phonepeMessage);
-            }
-        };
-        
-        tryNextLink();
-    });
-
     // Thank you alert
     document.getElementById('bank-paid-btn').addEventListener('click', function() {
         alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');
@@ -181,23 +39,44 @@ WhatsApp: 8989252740 for assistance`;
         alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');
     });
 
-    // Function to generate UPI QR code
-    function generateUPIQR() {
-        const upiId = 'ayushyaduvanshi56441@okicici';
-        const payeeName = 'Ayush Kumar';
-        const amount = '1099';
-        const transactionRef = 'FORMULA188CM';
-        
-        // Create UPI payment string
-        const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`;
-        
-        // Generate QR code using QRious
-        const qr = new QRious({
-            element: document.getElementById('upi-qr'),
-            value: upiString,
-            size: 200,
-            background: 'white',
-            foreground: 'black'
-        });
-    }
+    // UPI App selection handling
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('upi-app-btn') || e.target.closest('.upi-app-btn')) {
+            const btn = e.target.classList.contains('upi-app-btn') ? e.target : e.target.closest('.upi-app-btn');
+            const appUrl = btn.getAttribute('data-url');
+            const appName = btn.querySelector('span').textContent;
+            
+            // Try to open the UPI app
+            try {
+                window.location.href = appUrl;
+                
+                // Show feedback to user
+                btn.style.background = '#e8f5e8';
+                btn.style.borderColor = '#28a745';
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    btn.style.background = '#fff';
+                    btn.style.borderColor = '#e9ecef';
+                }, 2000);
+                
+                // Show info message
+                const infoDiv = document.querySelector('.upi-apps-section div[style*="margin-top:12px"]');
+                if (infoDiv) {
+                    const originalText = infoDiv.innerHTML;
+                    infoDiv.innerHTML = `<i class="fas fa-check-circle" style="color: #28a745;"></i> Opening ${appName}...`;
+                    infoDiv.style.color = '#28a745';
+                    
+                    setTimeout(() => {
+                        infoDiv.innerHTML = originalText;
+                        infoDiv.style.color = '#666';
+                    }, 3000);
+                }
+                
+            } catch (error) {
+                console.error('Error opening UPI app:', error);
+                alert(`Unable to open ${appName}. Please make sure the app is installed on your device.`);
+            }
+        }
+    });
 }); 

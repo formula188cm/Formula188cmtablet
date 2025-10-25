@@ -845,4 +845,89 @@ img {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     padding-left: 6px;
+}
+
+/* UPI Apps Grid Styling */
+.upi-apps-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.upi-apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.upi-app-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 10px;
+    background: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-height: 80px;
+}
+
+.upi-app-btn:hover {
+    border-color: #007bff;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.upi-app-btn i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #007bff;
+}
+
+.upi-app-btn span {
+    font-size: 0.85rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Specific app colors */
+.upi-app-btn[data-app="gpay"] i { color: #4285f4; }
+.upi-app-btn[data-app="paytm"] i { color: #00baf2; }
+.upi-app-btn[data-app="bhim"] i { color: #1e3a8a; }
+.upi-app-btn[data-app="amazon"] i { color: #ff9900; }
+.upi-app-btn[data-app="mobikwik"] i { color: #ff6b35; }
+.upi-app-btn[data-app="freecharge"] i { color: #ff6b35; }
+.upi-app-btn[data-app="jupiter"] i { color: #8b5cf6; }
+.upi-app-btn[data-app="cred"] i { color: #ff6b35; }
+
+/* Responsive design for UPI apps */
+@media (max-width: 600px) {
+    .upi-apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .upi-app-btn {
+        padding: 12px 8px;
+        min-height: 70px;
+    }
+    
+    .upi-app-btn i {
+        font-size: 1.3rem;
+        margin-bottom: 6px;
+    }
+    
+    .upi-app-btn span {
+        font-size: 0.8rem;
+    }
 } 

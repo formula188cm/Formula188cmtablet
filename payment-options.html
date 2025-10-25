@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MMBPJ99L"></script>
@@ -74,11 +73,46 @@
                 <div class="upi-details">
                     <div class="detail-row">UPI ID: <span id="upi-id">ayushyaduvanshi56441@okicici</span> <button class="copy-btn" data-copy="ayushyaduvanshi56441@okicici"><i class="fas fa-copy"></i></button></div>
                     <div class="detail-row"><img id="upi-qr" src="qr code.png.jpeg" alt="UPI QR Code" style="max-width:160px;"></div>
-                    <div style="text-align:center;margin:18px 0 0 0;">
-                        <button id="upi-pay-btn" class="complete-order-btn upi-link-btn" style="display:inline-block;padding:12px 28px;font-size:1.08rem;font-weight:600;background:#25d366;color:#fff;border-radius:8px;text-decoration:none;border:none;cursor:pointer;">Pay with UPI App</button>
-                        <button id="phonepe-pay-btn" class="complete-order-btn" style="display:inline-block;padding:12px 28px;font-size:1.08rem;font-weight:600;background:#5f259f;color:#fff;border-radius:8px;text-decoration:none;border:none;cursor:pointer;margin-left:8px;">Pay with PhonePe</button>
-                        <div style="margin-top:8px;font-size:0.97rem;color:#b00;max-width:320px;margin-left:auto;margin-right:auto;">
-                            <i class="fas fa-info-circle"></i> Note: If UPI app doesn't open, try PhonePe button or use the QR code option below.
+                    
+                    <!-- UPI Apps Selection -->
+                    <div class="upi-apps-section">
+                        <h4 style="margin: 20px 0 15px 0; font-size: 1.1rem; color: #333;">Choose your UPI App:</h4>
+                        <div class="upi-apps-grid">
+                            <button class="upi-app-btn" data-app="gpay" data-url="tez://upi/pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fab fa-google-pay"></i>
+                                <span>Google Pay</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="paytm" data-url="paytmmp://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Paytm</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="bhim" data-url="bhim://upi/pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-university"></i>
+                                <span>BHIM</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="amazon" data-url="amazonpay://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fab fa-amazon"></i>
+                                <span>Amazon Pay</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="mobikwik" data-url="mobikwik://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-wallet"></i>
+                                <span>MobiKwik</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="freecharge" data-url="freecharge://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-bolt"></i>
+                                <span>Freecharge</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="jupiter" data-url="jupiter://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-rocket"></i>
+                                <span>Jupiter</span>
+                            </button>
+                            <button class="upi-app-btn" data-app="cred" data-url="cred://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR">
+                                <i class="fas fa-credit-card"></i>
+                                <span>CRED</span>
+                            </button>
+                        </div>
+                        <div style="margin-top:12px;font-size:0.95rem;color:#666;text-align:center;">
+                            <i class="fas fa-info-circle"></i> Click on your preferred UPI app to open it directly
                         </div>
                     </div>
                 </div>
