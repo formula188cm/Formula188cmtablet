@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 </head>
 <body style="background:#fff;">
     <header>
@@ -32,9 +33,9 @@
                 <div class="detail-row" style="justify-content:space-between;align-items:center;font-size:1.08rem;">
                     <!-- <span style="font-weight:600;">UPI ID:</span> -->
                     <span id="upi-id" style="font-family:monospace;font-size:1.08rem;">ayushyaduvanshi56441@okicici</span>
-                    <button class="copy-btn" data-copy="ayushyaduvanshi56441@okhdfcbank" style="margin-left:10px;"><i class="fas fa-copy"></i></button>
+                    <button class="copy-btn" data-copy="ayushyaduvanshi56441@okicici" style="margin-left:10px;"><i class="fas fa-copy"></i></button>
                 </div>
-                <div class="detail-row" style="justify-content:center;"><img src="qr code.png.jpg" alt="UPI QR Code" style="max-width:160px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);"></div>
+                <div class="detail-row" style="justify-content:center;"><canvas id="upi-qr-canvas" style="max-width:160px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);"></canvas></div>
             </div>
             <div class="important-note" style="margin-top:18px;">
                 <strong>Note:</strong> After payment, please send the payment screenshot or details to WhatsApp: <a href="https://wa.me/918989252740" target="_blank" style="color:#000;">8989252740</a> or Email: <a href="mailto:formula188cm@gmail.com" style="color:#000;">formula188cm@gmail.com</a>
@@ -53,6 +54,24 @@
     </main>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Generate UPI QR code
+        const upiId = 'ayushyaduvanshi56441@okicici';
+        const payeeName = 'Ayush Kumar';
+        const amount = '1099';
+        const transactionRef = 'FORMULA188CM';
+        
+        // Create UPI payment string
+        const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`;
+        
+        // Generate QR code using QRious
+        const qr = new QRious({
+            element: document.getElementById('upi-qr-canvas'),
+            value: upiString,
+            size: 200,
+            background: 'white',
+            foreground: 'black'
+        });
+
         document.querySelectorAll('.copy-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const val = btn.getAttribute('data-copy');
@@ -63,6 +82,50 @@
                 }, 1200);
             });
         });
+        // Add UPI payment button functionality
+        const upiPayBtn = document.createElement('button');
+        upiPayBtn.textContent = 'Pay with UPI App';
+        upiPayBtn.style.cssText = 'display:block;margin:12px auto;padding:12px 24px;font-size:1.08rem;font-weight:600;background:#25d366;color:#fff;border-radius:8px;border:none;cursor:pointer;';
+        upiPayBtn.addEventListener('click', function() {
+            const upiId = 'ayushyaduvanshi56441@okicici';
+            const amount = '1099';
+            const payeeName = 'Ayush Kumar';
+            const transactionRef = 'FORMULA188CM';
+            
+            // Try multiple UPI deep link formats
+            const upiLinks = [
+                `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR&tr=${transactionRef}`,
+                `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`,
+                `upi://pay?pa=${upiId}&am=${amount}&cu=INR`,
+                `upi://pay?pa=${upiId}&am=${amount}`
+            ];
+            
+            let linkIndex = 0;
+            const tryNextLink = () => {
+                if (linkIndex < upiLinks.length) {
+                    const link = upiLinks[linkIndex];
+                    const timeout = setTimeout(() => {
+                        linkIndex++;
+                        tryNextLink();
+                    }, 2000);
+                    
+                    window.location.href = link;
+                    
+                    // Clear timeout if user navigates away
+                    window.addEventListener('beforeunload', () => clearTimeout(timeout));
+                } else {
+                    // Fallback: show manual instructions
+                    alert('UPI app could not be opened automatically. Please:\n\n1. Open your UPI app manually\n2. Enter UPI ID: ' + upiId + '\n3. Enter amount: ₹' + amount + '\n4. Complete the payment\n\nOr scan the QR code above.');
+                }
+            };
+            
+            tryNextLink();
+        });
+        
+        // Insert the button before the "I Have Paid Now" button
+        const upiDetails = document.querySelector('.upi-details');
+        upiDetails.appendChild(upiPayBtn);
+
         document.getElementById('upi-paid-btn').addEventListener('click', async function() {
             // No Sheet7 submission here anymore
             alert('Thank you for your payment! Please send the payment screenshot to WhatsApp: 8989252740 or Email: formula188cm@gmail.com');

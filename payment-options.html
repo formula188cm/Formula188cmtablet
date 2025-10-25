@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M9MMBPJ99L"></script>
@@ -74,9 +75,9 @@
                     <div class="detail-row">UPI ID: <span id="upi-id">ayushyaduvanshi56441@okicici</span> <button class="copy-btn" data-copy="ayushyaduvanshi56441@okicici"><i class="fas fa-copy"></i></button></div>
                     <div class="detail-row"><img id="upi-qr" src="qr code.png.jpeg" alt="UPI QR Code" style="max-width:160px;"></div>
                     <div style="text-align:center;margin:18px 0 0 0;">
-                        <a href="upi://pay?pa=ayushyaduvanshi56441@okicici&pn=Ayush%20Kumar&am=1099&cu=INR" class="complete-order-btn upi-link-btn" style="display:inline-block;padding:12px 28px;font-size:1.08rem;font-weight:600;background:#25d366;color:#fff;border-radius:8px;text-decoration:none;">Pay with UPI App</a>
+                        <button id="upi-pay-btn" class="complete-order-btn upi-link-btn" style="display:inline-block;padding:12px 28px;font-size:1.08rem;font-weight:600;background:#25d366;color:#fff;border-radius:8px;text-decoration:none;border:none;cursor:pointer;">Pay with UPI App</button>
                         <div style="margin-top:8px;font-size:0.97rem;color:#b00;max-width:320px;margin-left:auto;margin-right:auto;">
-                            <i class="fas fa-info-circle"></i> Note: UPI app links may not work on Apple/iOS devices. If you are using an iPhone, please use the QR code option below.
+                            <i class="fas fa-info-circle"></i> Note: If UPI app doesn't open, please use the QR code option below.
                         </div>
                     </div>
                 </div>
